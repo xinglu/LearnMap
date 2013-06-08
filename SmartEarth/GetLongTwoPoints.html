@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>获取两点间距离_SmartEarth Maps API </title>
+<style type="text/css">body,html{width:100%;height:100%;overflow:visible;margin:0;padding:0}
+</style>
+<script type="text/javascript" language="javascript" src="http://f.smartearth.cn:9000/SE_JSAPI?uid=smartearth"></script>  
+<script type="text/javascript" language="javascript">  
+var map = null;
+var distance = null;
+var layerInfowin = null;
+function onLoad(){
+	map = new SE.Map("mapDiv");
+	map.setCenter(new SE.LngLat(116.40969,39.94490),14);
+	map.addControl(new SE.MapControl());
+	var lnglat1 = new SE.LngLat(116.37949,39.98274);  
+    var lnglat2 = new SE.LngLat(116.39649,39.99974);  
+    var lnglats = [lnglat1,lnglat2];  
+    distance = Math.round(SE.PolyLineTool.getPointsDistance(lnglats)) + 'meter';
+    var marker1 = new SE.Marker(lnglat1);
+    var marker2 = new SE.Marker(lnglat2);
+    map.addOverLay(marker1);
+    map.addOverLay(marker2);
+    var line = new SE.PolyLine(lnglats);
+    line.setLineColor("#942490");
+    line.setOpacity(1);
+    map.addOverLay(line);
+    SE.Event.addListener(marker1,'mouseover',showDistance);
+    SE.Event.addListener(marker2,'mouseover',showDistance);
+    SE.Event.addListener(line,'mouseover',showDistance);
+    showDistance(map.fromLngLatToContainerPixel(lnglat2))
+}
+
+function showDistance(point)
+{
+	var lnglat = map.fromContainerPixelToLngLat(point);
+	if(!layerInfowin){
+		layerInfowin = new SE.InfoWindow(lnglat);
+	}
+	layerInfowin.setWidth(180);
+	layerInfowin.setTitle('<div>测距</div>');
+	layerInfowin.setLabel("the distance between the two point is " + distance);
+	map.addOverLay(layerInfowin);
+	layerInfowin.moveToShow();
+}
+</script>
+<body onLoad="onLoad()">
+<div id="mapDiv" style="width:500px;height:450px;"</div>
+</body>
+</html>

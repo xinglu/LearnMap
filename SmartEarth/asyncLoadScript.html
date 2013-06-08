@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>动态异步加载地图API_SmartEarth Maps API </title>
+<style type="text/css">body,html{width:100%;height:100%;overflow:visible;margin:0;padding:0}
+</style>
+<script type="text/javascript" language="javascript">  
+var map;
+/**  
+            动态异步加载地图API的回调函数----创建地图  
+        */   
+function createmap(){
+	map = new SE.map("mapDiv");
+	map.setCenter(new SE.LngLat(116.40969,39.94940),15);
+	map.addControl(new SE.MapControl());
+	map.addOverLay(new SE.Marker(map.getCenterPoint()));
+	map.enableHandleMouseScroll();
+	map.enableHandleKeyboard();
+}
+/**  
+            动态异步加载地图API  
+              
+            参数callback为回调函数  
+        */  
+function loadScript(callback){
+	var script = document.createElement("script");
+	script.src = 'http://f.smartearth.cn:9000/SE_JSAPI?uid=smartearth'; 
+	document.body.appendChild(script);
+	script.onLoad = script.onreadyStatechange=function(){
+		var loaded = !this.readyState||this.readyState==="loaded"||this.readyState==="complete";
+		if(loaded) callback();
+	}
+}
+
+/**  
+            点击页面上的按钮"点击我加载地图"之后执行这个函数,加载地图API  
+        */  
+        function onLoad() {  
+            loadScript(createmap);  
+        }       
+</script>
+<body> <input type="button" value="点击加载地图" style="width:100px;height:20px;font-sieze:12px;" onclick="onLoad()"/>  
+<div id="mapDiv" style="width:500px;height:450px;"</div>
+</body>
+</html>

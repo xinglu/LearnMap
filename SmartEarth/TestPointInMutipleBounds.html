@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>矩形的增加_SmartEarth Maps API </title>
+<style type="text/css">body,html{width:100%;height:100%;overflow:visible;margin:0;padding:0}
+</style>
+<script type="text/javascript" language="javascript" src="http://api.smartearth.cn/web/js/iColorPicker.js"></script> 
+<script type="text/javascript" language="javascript" src="http://f.smartearth.cn:9000/SE_JSAPI?uid=smartearth"></script>  
+<script type="text/javascript" language="javascript">  
+var map , bounds ,rect;
+function onLoad(){
+    map = new SE.Map("mapDiv");
+    map.setCenter(new SE.LngLat(116.32969,39.92940),11);
+    map.addControl(new SE.MapControl());
+    //定义矩形的显示区域
+    var points = new Array();    
+    points.push(new SE.LngLat(116.29376,39.95776));                
+    points.push(new SE.LngLat(116.36711,39.9642));   
+    points.push(new SE.LngLat(116.38496,39.9363));               
+    points.push(new SE.LngLat(116.3362,39.88678));     
+    polygon = new SE.Polygon(points);    
+    map.addOverLay(polygon);
+    /**  
+                点击地图，判断点是否在多边形之内  
+    */           
+    SE.Event.addListenera(map,'click',function(p)){
+        var lnglat = map.fromContainerPixelToLngLat(p);
+        if(polygon.containsPoint(lnglat)){
+            if(!marker){
+                marker = new SE.Marker(lnglat);
+                map.addOverLay(marker);
+                marker.openInfoWinHtml('这个点在指定范围之<span style="color:red;">内</span>');  
+            }else{
+                if(!marker){
+                    marker = new SE.Marker(lnglat);
+                    map.addOverLay(marker);
+                }else{
+                    marker.setLngLat(lnglat);
+                }
+                marker.openInfoWinHtml('这个点在指定范围之<span style="color:blue;">外</span>');  
+            }
+        }
+    }
+}
+</script>
+<body onLoad="onLoad()">
+<div id="mapDiv" style="width:500px;height:450px;"</div>
+</body>
+</html>
